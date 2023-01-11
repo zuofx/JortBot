@@ -2,10 +2,10 @@
 // Default invite: https://discord.com/oauth2/authorize?client_id=1062794185779990609&scope=bot&permissions=277025601560
 
 
-// Constants:
-const TOKEN = 'CHANGE ME'
-const CLIENT_ID = 'CHANGE ME'
-const GUILD_ID = 'CHANGE ME'
+// Constants: MAKE SURE TO UPDATE API TOKENS
+const TOKEN = ''
+const CLIENT_ID = ''
+const GUILD_ID = ''
 
 
 const Discord  = require('discord.js');
@@ -68,7 +68,7 @@ async function main() {
 
     try{
         console.log('Started refreshing application (/) commands.');
-        await rest.put(Routes.applicationCommands(CLIENT_ID), { body: commands });
+        await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), { body: commands });
         
     } catch (err) {
         console.log(err)
@@ -93,15 +93,13 @@ client.on('interactionCreate', async interaction => {
     if (interaction.commandName === 'lennyorban') {
 
         let coin = randomNum(2)
+        console.log(coin)
 
-        if (coin === 1) {
+        if (coin == 0) {
             await interaction.reply("We eat at: BAN");
         }
-        if (coin === 2) {
+        if (coin == 1) {
             await interaction.reply("We eat at: LENNY");
-        }
-        if (coin > 2) {
-            await interaction.reply("Error: Try running command again.")
         }
     }
 
