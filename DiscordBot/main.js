@@ -14,7 +14,7 @@ const { Client, GatewayIntentBits, REST, Routes } = require('discord.js');
 
 // Functions:
 function randomNum(n) {
-    return String(Math.floor(Math.random() * n))
+    return String(Math.floor(Math.random() * (n) ));
 }
 
 function tf_export(stuff) {
@@ -60,6 +60,10 @@ async function main() {
             name: 'newdj',
             description: 'get a new dj!',
         },
+        {
+            name: 'lennyorban',
+            description: 'Lenny or ban? Lets see.'
+        },
     ];
 
     try{
@@ -85,6 +89,21 @@ client.on('interactionCreate', async interaction => {
 
         await interaction.reply("DJ? More like: "+ d_word +" "+ j_word + "");
       }
+
+    if (interaction.commandName === 'lennyorban') {
+
+        let coin = randomNum(2)
+
+        if (coin === 1) {
+            await interaction.reply("We eat at: BAN");
+        }
+        if (coin === 2) {
+            await interaction.reply("We eat at: LENNY");
+        }
+        if (coin > 2) {
+            await interaction.reply("Error: Try running command again.")
+        }
+    }
 
   });
 
