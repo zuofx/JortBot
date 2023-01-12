@@ -72,7 +72,7 @@ async function main() {
 
     try{
         console.log('Started refreshing application (/) commands.');
-        await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), { body: commands });
+        await rest.put(Routes.applicationCommands(CLIENT_ID), { body: commands });
         
     } catch (err) {
         console.log(err)
