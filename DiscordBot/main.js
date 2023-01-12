@@ -1,6 +1,4 @@
-//import { REST } from '@discordjs/rest';
 // Default invite: https://discord.com/oauth2/authorize?client_id=1062794185779990609&scope=bot&permissions=277025601560
-
 
 // Constants: MAKE SURE TO UPDATE API TOKENS
 const TOKEN = ''
@@ -10,7 +8,9 @@ const GUILD_ID = ''
 
 const Discord  = require('discord.js');
 const fs = require('fs')
-const { Client, GatewayIntentBits, REST, Routes } = require('discord.js');
+const { Client, GatewayIntentBits, REST, Routes, quote } = require('discord.js');
+const { request } = require('undici');
+
 
 // Functions:
 function randomNum(n) {
@@ -21,7 +21,7 @@ function tf_export(stuff) {
     return stuff
 }
 
-function textfile(a) {
+function textFile(a) {
     let text = fs.readFileSync(''+ a + '_words.txt','utf8')
     text = text.split('\n')
 
@@ -64,6 +64,10 @@ async function main() {
             name: 'lennyorban',
             description: 'Lenny or ban? Lets see.'
         },
+        {
+            name: 'quote',
+            description: 'Get a random quote!'
+        },
     ];
 
     try{
@@ -77,12 +81,11 @@ async function main() {
 }
 
 client.on('interactionCreate', async interaction => {
-    if (!interaction.isChatInputCommand()) return;
   
     if (interaction.commandName === 'newdj') {
 
-        let d_list = textfile("d")
-        let j_list = textfile("j")
+        let d_list = textFile("d")
+        let j_list = textFile("j")
 
         let d_word = d_list[(randomNum(d_list.length))]
         let j_word = j_list[(randomNum(j_list.length))]
@@ -93,7 +96,6 @@ client.on('interactionCreate', async interaction => {
     if (interaction.commandName === 'lennyorban') {
 
         let coin = randomNum(2)
-        console.log(coin)
 
         if (coin == 0) {
             await interaction.reply("We eat at: BAN");
@@ -101,6 +103,18 @@ client.on('interactionCreate', async interaction => {
         if (coin == 1) {
             await interaction.reply("We eat at: LENNY");
         }
+
+    }
+
+    if (interaction.commandName === 'quote') {
+
+        interaction.reply("Hold on, loading your quote...");
+
+        const output = await request('https://api.quotable.io/random');
+        const quote = await output.body.json();
+
+        interaction.editReply("*\""+ quote.content + "\"* - " + quote.author + "");
+
     }
 
   });
