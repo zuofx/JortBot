@@ -1,4 +1,4 @@
-# AccroDJ-bot
+# JortBot
 A simple discord bot that generated random meanings for D.J, and some other small features.
 
 Commands:
