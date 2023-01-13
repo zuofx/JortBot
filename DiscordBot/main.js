@@ -29,13 +29,7 @@ function textFile(a) {
 
 function importTokens() {
     let raw = fs.readFileSync('tokens.txt', 'utf8')
-    let holder = raw.split('\n')
-
-    for (i = 0; i < holder.length; i++) {
-        temp = holder[i]
-        temp = temp.split(' ')
-        holder[i] = temp[2].trim()
-    }
+    let holder = raw.split(' ')
 
     return holder
 
@@ -82,6 +76,10 @@ async function main() {
             name: 'quote',
             description: 'Get a random quote!'
         },
+        {
+            name: 'coinflip',
+            description: 'Flip a coin',
+        }
     ];
 
     try{
