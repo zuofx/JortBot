@@ -11,6 +11,9 @@ Commands:
 > /quote <br>
     > Generate random quote
 
+> /coinflip <br>
+    > Flips a coin
+
 Requires:
 * nodejs
 * discord.js ( and @discord.js/rest )
