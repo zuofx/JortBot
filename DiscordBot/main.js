@@ -1,4 +1,4 @@
-// Default invite: https://discord.com/oauth2/authorize?client_id=1062794185779990609&scope=bot&permissions=277025601560
+// Default invite: ç
 
 // INITIATIONS & CONSTANTS
 const Discord  = require('discord.js');
@@ -16,6 +16,7 @@ const client = new Discord.Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildMessageTyping,
+    GatewayIntentBits.DirectMessages,
   ]
 })
 
@@ -73,6 +74,10 @@ async function main() {
         {
             name: 'coinflip',
             description: 'Flip a coin',
+        },
+        {
+            name: 'help',
+            description: 'List commands'
         }
     ];
 
@@ -137,6 +142,11 @@ client.on('interactionCreate', async interaction => {
             interaction.editReply("The coin says: ***TAILS***")
         }
         console.log("(*) finished executing /coinflip")
+    }
+
+    if (interaction.commandName === 'help') {
+        interaction.reply("DM'd you the help guide.")
+        interaction.user.send("```Available Commands: \n > /newdj: get a new DJ acronym \n > /lennyorban: pick between lenny or ban \n > /coinflip: flip a coin \n > /quote: get a random quote \n```")
     }
   });
 
