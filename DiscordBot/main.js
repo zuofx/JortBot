@@ -1,54 +1,15 @@
 // Default invite: https://discord.com/oauth2/authorize?client_id=1062794185779990609&scope=bot&permissions=277025601560
 
-// INITIATIONS
+// INITIATIONS & CONSTANTS
 const Discord  = require('discord.js');
 const fs = require('fs')
 const { Client, GatewayIntentBits, REST, Routes, quote } = require('discord.js');
 const { request } = require('undici');
 
-// Functions:
-function randomNum(n) {
-    return String(Math.floor(Math.random() * (n) ));
-}
-
-function tf_export(stuff) {
-    return stuff
-}
-
-function textFile(a) {
-    let text = fs.readFileSync(''+ a + '_words.txt','utf8')
-    text = text.split('\n')
-
-    for (i = 0; i < text.length; i ++) {
-        text[i] = text[i].trim()
-    }
-
-    return text
-
-}
-
-function importTokens() {
-    let raw = fs.readFileSync('tokens.txt', 'utf8')
-    let holder = raw.split('\n')
-
-    for (i = 0; i < holder.length; i++) {
-        temp = holder[i]
-        temp = temp.split(' ')
-        holder[i] = temp[2].trim()
-    }
-
-    return holder
-
-}
-
-// // // // // // // // // // // // // //
-// Constants: MAKE SURE TO UPDATE API TOKENS
 allTokens = importTokens();
 const TOKEN = allTokens[0]
 const CLIENT_ID = allTokens[1]
 const GUILD_ID = allTokens[2]
-
-console.log(TOKEN, CLIENT_ID, GUILD_ID)
 
 const client = new Discord.Client({
   intents: [
@@ -60,15 +21,42 @@ const client = new Discord.Client({
 
 const rest = new REST({ version: '10' }).setToken(TOKEN);
 
+// Functions:
+function randomNum(n) {
+    return String(Math.floor(Math.random() * (n) ));
+}
+
+function textFile(a) {
+    let text = fs.readFileSync(''+ a + '_words.txt','utf8')
+    text = text.split('\n')
+
+    for (i = 0; i < text.length; i ++) {
+        text[i] = text[i].trim()
+    }
+    return text
+}
+
+function importTokens() {
+    let raw = fs.readFileSync('tokens.txt', 'utf8')
+    let holder = raw.split(' ')
+
+    return holder
+}
+
+// // // // // // // // // // // // // //
 
 client.once('ready', () => {
 
-    console.log('AccroDJ is online')
+    console.log('###########################################')
+    console.log('JortBot is online, all vitals nominal.')
+    console.log('Bot created by zuofx')
+    console.log('http://github.com/zuofx')
+    console.log('https://github.com/zuofx/JortBot')
+    console.log('###########################################')
 
 })
 
 async function main() {
-
     const commands = [
         {
             name: 'newdj',
@@ -82,6 +70,10 @@ async function main() {
             name: 'quote',
             description: 'Get a random quote!'
         },
+        {
+            name: 'coinflip',
+            description: 'Flip a coin',
+        }
     ];
 
     try{
@@ -91,55 +83,61 @@ async function main() {
     } catch (err) {
         console.log(err)
     }
-
 }
 
 client.on('interactionCreate', async interaction => {
-  
     if (interaction.commandName === 'newdj') {
+        console.log("(*) recieved /newdj command.")
+        await interaction.reply("Generating...")
 
         let d_list = textFile("d")
         let j_list = textFile("j")
-
         let d_word = d_list[(randomNum(d_list.length))]
         let j_word = j_list[(randomNum(j_list.length))]
 
-        await interaction.reply("DJ? More like: "+ d_word +" "+ j_word + "");
+        interaction.editReply("DJ? More like: "+ d_word +" "+ j_word + "");
+        console.log("(*) finished executing /newdj")
       }
 
     if (interaction.commandName === 'lennyorban') {
+        await interaction.reply("Hold on...")
+        console.log("(*) recieved /lennyorban command")
 
         let coin = randomNum(2)
 
         if (coin == 0) {
-            await interaction.reply("We eat at: BAN");
+            interaction.editReply("We eat at: BAN");
         }
         if (coin == 1) {
-            await interaction.reply("We eat at: LENNY");
+            interaction.editReply("We eat at: LENNY");
         }
-
+        console.log("(*) finished executing /lennyorban")
     }
 
     if (interaction.commandName === 'quote') {
 
-        interaction.reply("Hold on, loading your quote...");
+        console.log("(*) recieved /quote command")
+        await interaction.reply("Hold on, loading your quote...");
 
         const output = await request('https://api.quotable.io/random');
         const quote = await output.body.json();
 
         interaction.editReply("*\""+ quote.content + "\"* - " + quote.author + "");
+        console.log("(*) finished executing /quote")
     }
 
     if (interaction.commandName === 'coinflip') {
+        console.log("(*) recieved /coinflip command")
+        await interaction.reply("Flipping...")
         let coin = randomNum(2)
         if (coin == 0) {
-            await interaction.reply("The coin says: ***HEADS***")
+            interaction.editReply("The coin says: ***HEADS***")
         }
         if (coin == 1) {
-            await interaction.reply("The coin says: ***TAILS***")
+            interaction.editReply("The coin says: ***TAILS***")
         }
+        console.log("(*) finished executing /coinflip")
     }
-
   });
 
 main();
