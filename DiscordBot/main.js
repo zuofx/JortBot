@@ -1,10 +1,12 @@
-// Default invite: ç
+// Default invite: 
 
 // INITIATIONS & CONSTANTS
 const Discord  = require('discord.js');
 const fs = require('fs')
 const { Client, GatewayIntentBits, REST, Routes, quote } = require('discord.js');
 const { request } = require('undici');
+const { type } = require('os');
+const { stringify } = require('querystring');
 
 allTokens = importTokens();
 const TOKEN = allTokens[0]
@@ -44,6 +46,29 @@ function importTokens() {
     return holder
 }
 
+function openJson(name) {
+    let rawJson = fs.readFileSync("people.json")
+    let parseJson = JSON.parse(rawJson)
+
+    return parseJson
+}
+
+function updateJason(newJson) {
+
+    var writeJson = JSON.stringify(newJson)
+
+    fs.writeFile("people.json", writeJson, function(err, result) {
+        if (err) console.log('error', err)
+
+    })
+
+}
+
+function isNumeric(str) {
+    if (typeof str != "string") return false
+    return !isNaN(str) && !isNaN(parseFloat(str))
+  }
+
 // // // // // // // // // // // // // //
 
 client.once('ready', () => {
@@ -78,6 +103,35 @@ async function main() {
         {
             name: 'help',
             description: 'List commands'
+        },
+        {
+            name: 'notfunny',
+            description: 'They weren\'t being funny',
+            options: [
+                {
+                    name: 'name',
+                    description: 'Who to update?',
+                    type: 3,
+                    required: true,
+                },{
+                    name: 'amount',
+                    description: 'How much to update?',
+                    type: 3,
+                    required: true,
+                }
+            ]
+        },
+        {
+            name: 'howunfunny',
+            description: 'How many times was this person unfunny?',
+            options: [
+                {
+                    name: 'name',
+                    description: 'Who to look for?',
+                    type: 3,
+                    required: true,
+                }
+            ]
         }
     ];
 
@@ -148,6 +202,92 @@ client.on('interactionCreate', async interaction => {
         interaction.reply("DM'd you the help guide.")
         interaction.user.send("```Available Commands: \n > /newdj: get a new DJ acronym \n > /lennyorban: pick between lenny or ban \n > /coinflip: flip a coin \n > /quote: get a random quote \n```")
     }
+
+    if (interaction.commandName === 'notfunny') {
+        await interaction.reply("Hold on...");
+        let person = interaction.options.getString('name').toUpperCase().trim();
+        let rawAmo = interaction.options.getString('amount')
+
+        let check = isNumeric(rawAmo)
+
+        let amo = 0;
+        if (check) {
+            amo = parseInt(rawAmo);
+            console.log(1)
+        }else if (!check) {
+            amo = 0
+            console.log(0)
+        }
+        
+
+        console.log("Added " + String(amo) + " to " + person + "'s NotFunny Counter.")
+
+        let jason = openJson(person);
+        console.log(jason.people[0].name)
+        
+        let size = jason.people.length
+
+        let found = false;
+        for (let i = 0; i < size; i ++) {
+            if (jason.people[i].name === person) {
+                found = true;
+            }
+        }
+        
+        if (found) {
+            for (let i = 0; i < size; i ++) {
+                if (jason.people[i].name === person) {
+                    jason.people[i].counter = jason.people[i].counter + amo;
+                }
+            }
+
+            updateJason(jason);
+
+        }else if (!found) {
+            let newPerson = {name:person, counter:amo}
+            jason.people.push(newPerson)
+            updateJason(jason);
+        }
+
+        if (check) {
+            if (found) {
+                interaction.editReply("Added " + String(amo) + " to " + person + "'s Not Funny counter.");
+            }else if (!found) {
+                interaction.editReply("Did not find an existing entry for: " + person + ", adding a new entry with counter: " + String(amo))
+            }
+        }else if (!check) {
+            interaction.editReply("Nothing changed, no valid amount was given.")
+        }
+    }
+
+    if (interaction.commandName === "howunfunny") {
+        await interaction.reply("Hold on...")
+        let person = interaction.options.getString('name').trim().toUpperCase();
+
+        let jason = openJson(person);
+        let size = jason.people.length
+
+        let found = false;
+        for (let i = 0; i < size; i ++) {
+            if (jason.people[i].name === person) {
+                found = true;
+            }
+        }
+
+        if (found) {
+            let amount = 0
+            for (let i = 0; i < size; i ++) {
+                if (jason.people[i].name === person) {
+                    amount = parseInt(jason.people[i].counter);
+                }
+            }
+            interaction.editReply(person + "'s Unfunny Counter is at: " + amount)
+        }else if (!found) {
+            interaction.editReply("Could not find this person.")
+        }
+
+    }
+
   });
 
 main();
