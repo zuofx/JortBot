@@ -181,7 +181,7 @@ client.on('interactionCreate', async interaction => {
         const output = await request('https://api.quotable.io/random');
         const quote = await output.body.json();
 
-        interaction.editReply("*\""+ quote.content + "\"* - " + quote.author + "");
+        interaction.editReply(">>>*\""+ quote.content + "\"* - " + quote.author + "");
         console.log("(*) finished executing /quote")
     }
 
